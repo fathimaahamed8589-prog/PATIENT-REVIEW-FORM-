@@ -144,6 +144,8 @@ document.getElementById('stars').innerHTML=[5,4,3,2,1].map(n=>
 const sl=document.getElementById('starlabel');
 document.querySelectorAll('input[name=overall]').forEach(r=>r.onchange=()=>sl.textContent=r.value+' / 5 – '+RATE_LABELS[r.value-1]);
 
+// Paste your Google Apps Script web app URL here (see google-sheet-setup.md)
+const SHEET_URL='';
 const KEY='alsafa_feedback';
 const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}};
 const form=document.getElementById('form');
@@ -160,6 +162,9 @@ form.addEventListener('submit',e=>{
   const fd=new FormData(form),rec={submitted:new Date().toISOString()};
   ['name','phone',...rating.map(r=>r[0]),...choice.map(c=>c[0]),'overall','comments']
     .forEach(k=>rec[k]=(fd.get(k)||'').toString().trim());
+  if(SHEET_URL){
+    fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(rec)}).catch(()=>{});
+  }
   const all=load();all.push(rec);
   try{localStorage.setItem(KEY,JSON.stringify(all))}catch(err){alert('Could not save the response on this device.');return}
   form.style.display='none';document.getElementById('thanks').style.display='block';
