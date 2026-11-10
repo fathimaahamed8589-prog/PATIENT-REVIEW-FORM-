@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patient Feedback – Al Safa's Clinic and Hygienic Primary Care</title>
+<style>
+  :root{--teal:#0f766e;--teal-d:#115e59;--bg:#f0f7f6;--card:#fff;--ink:#1f2937;--mute:#6b7280;--line:#d7e3e1;--star:#f59e0b;--err:#b91c1c}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  header{background:var(--teal);color:#fff;text-align:center;padding:28px 16px}
+  header h1{margin:0;font-size:1.5rem}
+  header p{margin:6px 0 0;opacity:.9}
+  main{max-width:720px;margin:0 auto;padding:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin:14px 0}
+  .card h2{margin:0 0 4px;font-size:1.05rem;color:var(--teal-d)}
+  fieldset{border:0;padding:0;margin:0}
+  legend{font-weight:600;padding:0;margin-bottom:8px}
+  .hint{color:var(--mute);font-size:.85rem;margin:0 0 8px}
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .opts label{position:relative}
+  .opts input{position:absolute;opacity:0}
+  .opts span{display:inline-block;padding:8px 14px;border:1px solid var(--line);border-radius:999px;cursor:pointer;font-size:.92rem;background:#fff}
+  .opts input:checked+span{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .opts input:focus-visible+span{outline:3px solid #99d6cf}
+  .q{padding:14px 0;border-top:1px solid var(--line)}
+  .q:first-of-type{border-top:0}
+  .q.invalid legend{color:var(--err)}
+  .q.invalid .msg{display:block}
+  .msg{display:none;color:var(--err);font-size:.85rem;margin-top:6px}
+  input[type=text],input[type=tel],textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit}
+  textarea{min-height:90px;resize:vertical}
+  .grid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+  @media(max-width:520px){.grid{grid-template-columns:1fr}}
+  label.f{display:block;font-size:.9rem;font-weight:600;margin-bottom:4px}
+  .stars{display:flex;flex-direction:row-reverse;justify-content:center;gap:4px}
+  .stars input{position:absolute;opacity:0}
+  .stars label{font-size:2.6rem;color:#d1d5db;cursor:pointer;line-height:1;transition:color .1s}
+  .stars input:checked~label,.stars label:hover,.stars label:hover~label{color:var(--star)}
+  .stars input:focus-visible+label{outline:3px solid #99d6cf;border-radius:6px}
+  .starwrap{text-align:center}
+  .starlabel{min-height:1.4em;color:var(--mute);font-size:.9rem}
+  button{width:100%;padding:14px;border:0;border-radius:10px;background:var(--teal);color:#fff;font-size:1.05rem;font-weight:600;cursor:pointer}
+  button:hover{background:var(--teal-d)}
+  .thanks{display:none;text-align:center;padding:40px 16px}
+  .thanks h2{color:var(--teal-d)}
+  .link{background:none;color:var(--teal);width:auto;padding:6px;text-decoration:underline;font-size:.9rem}
+  footer{text-align:center;color:var(--mute);font-size:.8rem;padding:20px}
+  #admin{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>Al Safa's Clinic and Hygienic Primary Care</h1>
+  <p>Patient Feedback Form – your opinion helps us improve</p>
+</header>
+
+<main>
+<form id="form" novalidate>
+
+  <div class="card">
+    <h2>About you <small style="font-weight:400;color:var(--mute)">(optional)</small></h2>
+    <div class="grid">
+      <div><label class="f" for="name">Name</label><input type="text" id="name" name="name" autocomplete="name"></div>
+      <div><label class="f" for="phone">Phone</label><input type="tel" id="phone" name="phone" autocomplete="tel"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Reception &amp; Facilities</h2>
+    <p class="hint">1 = Poor, 5 = Excellent</p>
+    <div id="rate-qs"></div>
+  </div>
+
+  <div class="card">
+    <h2>Doctor &amp; Procedure</h2>
+    <p class="hint">Skip these if you only visited for a consultation.</p>
+    <div id="doc-qs"></div>
+  </div>
+
+  <div class="card">
+    <h2>Overall rating</h2>
+    <fieldset class="q starwrap" data-req="overall">
+      <legend>How would you rate our clinic out of 5 stars?</legend>
+      <div class="stars" id="stars"></div>
+      <div class="starlabel" id="starlabel"></div>
+      <span class="msg">Please give a star rating.</span>
+    </fieldset>
+  </div>
+
+  <div class="card">
+    <label class="f" for="comments">Any other comments or suggestions?</label>
+    <textarea id="comments" name="comments"></textarea>
+  </div>
+
+  <button type="submit">Submit feedback</button>
+</form>
+
+<div class="thanks card" id="thanks">
+  <h2>Thank you!</h2>
+  <p>Your feedback has been recorded. We appreciate your time and wish you good health.</p>
+  <button type="button" id="again">Submit another response</button>
+</div>
+
+<div id="admin" class="card">
+  <h2>Staff only</h2>
+  <p id="count" class="hint"></p>
+  <button type="button" id="csv">Download responses (CSV)</button>
+  <button type="button" class="link" id="clear">Clear stored responses</button>
+</div>
+</main>
+<footer>Al Safa's Clinic and Hygienic Primary Care</footer>
+
+<script>
+const RATE_LABELS=["Poor","Fair","Good","Very good","Excellent"];
+const rating=[
+  ["reception","How is the reception?"],
+  ["receptionist","How is the receptionist's behavior?"],
+  ["infrastructure","How is the clinic infrastructure (cleanliness, equipment, seating)?"],
+  ["staff","How is the staff members' behavior?"],
+  ["doctor","How is the doctor?"]
+];
+const choice=[
+  ["explained","Did the doctor explain the procedure well?",["Yes, clearly","Somewhat","No"]],
+  ["painless","Was the procedure painless?",["Yes, painless","Mostly","Painful"]],
+  ["tolerable","Were you able to tolerate the pain?",["Yes, easily","With some difficulty","No, very hard","No pain felt"]],
+  ["postcare","Was post-procedural care provided?",["Yes","No"]],
+  ["advice","Was procedural advice given in a proper way?",["Yes, properly","Partly","No"]]
+];
+
+function radios(name,opts){
+  return '<div class="opts">'+opts.map((o,i)=>
+    `<label><input type="radio" name="${name}" value="${o.v}"><span>${o.t}</span></label>`).join('')+'</div>';
+}
+document.getElementById('rate-qs').innerHTML=rating.map(([k,t])=>
+  `<fieldset class="q" data-req="${k}"><legend>${t}</legend>`+
+  radios(k,RATE_LABELS.map((l,i)=>({v:i+1,t:`${i+1} – ${l}`})))+
+  `<span class="msg">Please select an option.</span></fieldset>`).join('');
+document.getElementById('doc-qs').innerHTML=choice.map(([k,t,o])=>
+  `<fieldset class="q"><legend>${t}</legend>`+
+  radios(k,o.map(x=>({v:x,t:x})))+`</fieldset>`).join('');
+document.getElementById('stars').innerHTML=[5,4,3,2,1].map(n=>
+  `<input type="radio" name="overall" id="s${n}" value="${n}"><label for="s${n}" title="${n} star${n>1?'s':''}">★</label>`).join('');
+const sl=document.getElementById('starlabel');
+document.querySelectorAll('input[name=overall]').forEach(r=>r.onchange=()=>sl.textContent=r.value+' / 5 – '+RATE_LABELS[r.value-1]);
+
+const KEY='alsafa_feedback';
+const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}};
+const form=document.getElementById('form');
+
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  let ok=true,first=null;
+  form.querySelectorAll('[data-req]').forEach(f=>{
+    const has=form.querySelector(`input[name=${f.dataset.req}]:checked`);
+    f.classList.toggle('invalid',!has);
+    if(!has){ok=false;first=first||f}
+  });
+  if(!ok){first.scrollIntoView({behavior:'smooth',block:'center'});return}
+  const fd=new FormData(form),rec={submitted:new Date().toISOString()};
+  ['name','phone',...rating.map(r=>r[0]),...choice.map(c=>c[0]),'overall','comments']
+    .forEach(k=>rec[k]=(fd.get(k)||'').toString().trim());
+  const all=load();all.push(rec);
+  try{localStorage.setItem(KEY,JSON.stringify(all))}catch(err){alert('Could not save the response on this device.');return}
+  form.style.display='none';document.getElementById('thanks').style.display='block';
+  window.scrollTo(0,0);
+});
+document.getElementById('again').onclick=()=>{
+  form.reset();sl.textContent='';form.style.display='';
+  document.getElementById('thanks').style.display='none';
+};
+
+// Staff area: open the page with #staff at the end of the address
+function showAdmin(){
+  const on=location.hash==='#staff';
+  document.getElementById('admin').style.display=on?'block':'none';
+  document.getElementById('count').textContent=load().length+' response(s) stored on this device.';
+}
+addEventListener('hashchange',showAdmin);showAdmin();
+document.getElementById('csv').onclick=()=>{
+  const rows=load();if(!rows.length)return alert('No responses yet.');
+  const cols=Object.keys(rows[0]);
+  const esc=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const csv=[cols.join(',')].concat(rows.map(r=>cols.map(c=>esc(r[c])).join(','))).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='patient-feedback.csv';a.click();
+};
+document.getElementById('clear').onclick=()=>{
+  if(confirm('Delete all stored responses on this device?')){localStorage.removeItem(KEY);showAdmin()}
+};
+</script>
+</body>
+</html>
