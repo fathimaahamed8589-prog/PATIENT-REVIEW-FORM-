@@ -145,7 +145,7 @@ const sl=document.getElementById('starlabel');
 document.querySelectorAll('input[name=overall]').forEach(r=>r.onchange=()=>sl.textContent=r.value+' / 5 – '+RATE_LABELS[r.value-1]);
 
 // Paste your Google Apps Script web app URL here (see google-sheet-setup.md)
-const SHEET_URL='';
+const SHEET_URL='https://script.google.com/macros/s/AKfycbyvyZRIuQZa-Pm6px2vh6dk7YYL5VpgXel9c5-QM6JgVWWFr0jwObhBCfcOCg5kCuC7iQ/exec';
 const KEY='alsafa_feedback';
 const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}};
 const form=document.getElementById('form');
